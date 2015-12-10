@@ -61,7 +61,7 @@ if __name__  == "__main__":
     # for each image in the folder
     for image_path in glob.glob(input_folder+"/*.jpg"):
         #remove the folder prefix and get the image ID
-        image_ID = image_path.strip(input_folder)
+        image_ID = image_path.replace(input_folder, "")
         
         #if already tagged
         if image_ID in df['image_ID'].values:
