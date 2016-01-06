@@ -1,9 +1,9 @@
 import sys
+sys.path.append(".")
 import numpy as np
 from sklearn.cross_validation import KFold, LabelKFold
 from utils import weighted_precision_recall, read_training_data
 from models import Model
-sys.path.append(".")
 
 if __name__ == "__main__":
     csv_path = sys.argv[1]

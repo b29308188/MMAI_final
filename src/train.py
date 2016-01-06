@@ -19,8 +19,6 @@ if __name__ == "__main__":
     model.fit(X, Y, sample_weight = sample_weights)
     #make prediction
     predY = model.predict(X)
-    #print X[20:40]
-    #print predY[20:40]
     #evaluation
     scores = weighted_precision_recall(Y, predY, sample_weight = sample_weights)
     print "IN SAMPLE -- (Precision/Recall) T: (%.3f,%.3f) / F: (%.3f,%.3f) / N:(%.3f,%.3f)" %(scores[0][0], scores[0][1], scores[1][0], scores[1][1], scores[2][0], scores[2][1])
