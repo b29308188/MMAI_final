@@ -1,28 +1,11 @@
 import cv2
 import sys
+sys.path.append(".")
 import glob
 import os
 import pandas as pd
-
-def detect_faces(detector, image):
-    """
-    Input: a face detector and an image
-    Output: the faces locations (x, y, width, height)
-    """
-    #convert to gray scale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
-    # Detect faces in the image
-    faces = detector.detectMultiScale(
-        gray,
-        scaleFactor=1.05,
-        minNeighbors=5,
-        minSize=(10, 10),
-        flags = cv2.CASCADE_SCALE_IMAGE
-    )
-    
-    return faces
-
+from operator import itemgetter
+from utils import detect_faces
 
 if __name__  == "__main__":
     
@@ -59,7 +42,7 @@ if __name__  == "__main__":
     detector = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
 
     # for each image in the folder
-    for image_path in glob.glob(input_folder+"/*.jpg"):
+    for image_path in glob.glob(input_folder+"/*.[Jj][Pp][Gg]"):
         #remove the folder prefix and get the image ID
         image_ID = image_path.replace(input_folder, "")
         
@@ -80,6 +63,7 @@ if __name__  == "__main__":
                 continue
         
         tuples = [] # list of (image_ID, face, tag)
+        faces = sorted(faces, key=lambda tup: tup[0])
         for (x, y, w, h)  in faces:
             # Draw a rectangle around the faces
             cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
