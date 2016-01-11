@@ -5,6 +5,9 @@ import numpy as np
 from datasets import Photo
 import cv2
 
+def f1_score(precision, recall):
+    return 2*precision*recall/(precision+recall)
+
 def detect_faces(detector, image):
     """
     Input: a face detector and an image, you may prorivde a detector as this:
@@ -19,7 +22,7 @@ def detect_faces(detector, image):
         gray,
         scaleFactor=1.05,
         #scaleFactor=1.2,
-        minNeighbors=3,
+        minNeighbors=5,
         minSize=(10, 10),
         flags = cv2.CASCADE_SCALE_IMAGE
     )

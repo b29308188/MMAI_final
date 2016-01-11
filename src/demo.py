@@ -23,6 +23,7 @@ if __name__ == "__main__":
         p = Photo()
         #before applying the filter
         image1 = cv2.imread(image_path)
+	image1 = cv2.resize(image1, (960, 720) )
         if image1 is None:
             print "no image", image_path
             continue
@@ -38,6 +39,7 @@ if __name__ == "__main__":
         #after applying the filter
         #read image again to remove rectangles
         image2 = cv2.imread(image_path)
+	image2 = cv2.resize(image2, (960, 720) )
         p.read_image(image_path)
         p.extract_features()
         X = np.array([f.feature for f in p.faces])
