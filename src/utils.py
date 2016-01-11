@@ -17,9 +17,7 @@ def detect_faces(detector, image):
     # Detect faces in the image
     faces = detector.detectMultiScale(
         gray,
-        scaleFactor=1.05,
-        minNeighbors=5,
-        minSize=(10, 10),
+        scaleFactor=1.2,
         flags = cv2.CASCADE_SCALE_IMAGE
     )
     return faces

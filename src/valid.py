@@ -15,8 +15,8 @@ if __name__ == "__main__":
     # Machine Learning models
     model = Model()
     
-    kf = LabelKFold(categories, n_folds = 5) # ***shuffle internally***
-    #kf = KFold(len(X), n_folds = 5, shuffle = True, random_state = 123)
+    #kf = LabelKFold(categories, n_folds = 5) # ***shuffle internally***
+    kf = KFold(len(X), n_folds = 5, shuffle = True, random_state = 123)
     
     #cross validation
     for train_index, test_index in kf:

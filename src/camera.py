@@ -21,7 +21,7 @@ class Camera():
 		self.images = None
 
 	def start(self):
-		cv2.namedWindow("preview")
+		cv2.namedWindow("opening...")
 		vc = cv2.VideoCapture(0)
 
 		detect_flag = False
@@ -35,8 +35,8 @@ class Camera():
 		while True:
 			if frame is not None:
 				pframe = cv2.flip(cv2.resize(frame, (960, 720)), 1)
-				dframe = cv2.resize(pframe, (240, 180)) # size ratio = 4
-				ratio = 4
+				dframe = cv2.resize(pframe, (480, 360)) # size ratio = 4
+				ratio = 2
 
 			
 				p = Photo()
@@ -60,17 +60,12 @@ class Camera():
 						self.faces += [(f.x, f.y, f.w, f.h, inv_label_maps[predY[i]], None)]
 
 
-				cv2.imshow("image", pframe)
+				cv2.imshow("camera", pframe)
 
 			
 			rval, frame = vc.read()
 
 			oper = cv2.waitKey(1) & 0xFF
-			if oper == ord('d'):
-
-				detect_flag = not detect_flag
-			if oper == ord('q'):
-				break
 			if oper == ord('p'):
 				t = time.time()
 				iname = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H.%M.%S')
@@ -127,7 +122,7 @@ if __name__ == "__main__":
 
 			print "predict: ", time.time()-a
 			a = time.time()
-			cv2.imshow("image", pframe)
+			cv2.imshow("camera", pframe)
 			#cv2.imshow("preview", pframe)
 
 		rval, frame = vc.read()
@@ -139,40 +134,13 @@ if __name__ == "__main__":
 			# videoC.write(frame)
 
 		oper = cv2.waitKey(1) & 0xFF
-		if oper == ord('q'):
-			break
 		if oper == ord('p'):
 			t = time.time()
 			iname = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H.%M.%S')
 			print iname
-			iname = "/Users/GDog/Desktop/" + iname + ".png"
 			cv2.imwrite(iname, cv2.flip(frame, 1))
 			vc.release()
 			break
-		if oper == ord('v'):
-			fps = 1/(s-ss)
-			capSize = (1280, 720) # this is the size of my source video
-			fourcc = cv2.VideoWriter_fourcc('m','p','4','v') # note the lower case
-			videoC = cv2.VideoWriter()
-			t = time.time()
-			iname = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H.%M.%S')
-			print iname
-			iname = "/Users/GDog/Desktop/" + iname + ".mp4"
-			success = videoC.open(iname,fourcc,fps,capSize,True)
-			videoflag = 1
-			V = []
-
-		if oper == ord('b'):
-			print iname
-			for f in V:
-				videoC.write(f)
-
-			videoC.release()
-			break
-
-
-
-
 
 
 

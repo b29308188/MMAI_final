@@ -55,18 +55,19 @@ class Photo:
         Add a face to the list of faces.
         """
         self.faces.append( self.Face(x, y, w, h, tag) )
-
     def histogram(self, img):
         
         Orishape = img.shape
         hist = []
         img = img.reshape((img.shape[0]*img.shape[1]*img.shape[2]),order='F')
-        hist += list(np.histogram(img[0:Orishape[0]*Orishape[1]], bins=np.arange(0,257,64))[0])
-        hist += list(np.histogram(img[Orishape[0]*Orishape[1]:2*Orishape[0]*Orishape[1]], bins=np.arange(0,257,64))[0])
-        hist += list(np.histogram(img[2*Orishape[0]*Orishape[1]:3*Orishape[0]*Orishape[1]], bins=np.arange(0,257,32))[0])
-
+        a = np.histogram(img[0:Orishape[0]*Orishape[1]], bins=np.arange(0,257,64))[0]
+        hist += list(a.astype(float)/np.sum(a))
+        b = np.histogram(img[Orishape[0]*Orishape[1]:2*Orishape[0]*Orishape[1]], bins=np.arange(0,257,64))[0]
+        hist += list(b.astype(float)/np.sum(b))
+        c = np.histogram(img[2*Orishape[0]*Orishape[1]:3*Orishape[0]*Orishape[1]], bins=np.arange(0,257,32))[0]
+        hist += list(c.astype(float)/np.sum(c))
         return hist
-
+    
     def colorgram(self, img):
         cgram = []
         for i in xrange(3): # RGB
@@ -76,7 +77,7 @@ class Photo:
 
     def get_global_features(self):
         gfs = []
-        gfs += [len(self.faces)] # number of faces in this image
+        gfs += [len(self.faces), self.image.shape[0]*self.image.shape[1]] # number of faces in this image
         average_distance = 0.
         self.disMatrix = np.zeros((len(self.faces), len(self.faces)))
         for i, f1 in enumerate(self.faces):
@@ -92,12 +93,13 @@ class Photo:
         self.global_feature = gfs
 
     def local_features(self, f, no):
-        lfs = [f.x, f.y, f.w, f.h] 
+        lfs = [f.x, f.y, f.w, f.h ] 
         lfs += self.colorgram(self.image[f.y : f.y+f.h, f.x : f.x+f.w])
+
         lfs += [np.var(self.disMatrix[no, :]), np.mean(self.disMatrix[no, :])] # average distance to other faces
         #lfs += [f.w * f.h] # size
         lfs += [f.x+f.w/2, f.y+f.h/2] # center
-
+        
         NinR = 0.0
         R = 0.4 * self.image.shape[0]# percentage of image's width
         for i in xrange(len(self.faces)):
@@ -118,6 +120,7 @@ class Photo:
         for i, f in enumerate(self.faces):
             if self.image is not None:
                 f.feature = np.array(self.local_features(f, i) + self.global_feature )
+                #f.feature = np.array(self.local_features(f, i) )
             else:
                 f.feature = np.array([f.x, f.y, f.w, f.h])
 
