@@ -17,7 +17,10 @@ def detect_faces(detector, image):
     # Detect faces in the image
     faces = detector.detectMultiScale(
         gray,
-        scaleFactor=1.2,
+        scaleFactor=1.05,
+        #scaleFactor=1.2,
+        minNeighbors=3,
+        minSize=(10, 10),
         flags = cv2.CASCADE_SCALE_IMAGE
     )
     return faces
@@ -68,7 +71,7 @@ def weighted_precision_recall(trueY, predY, sample_weight = None):
             r = hit / deno_r 
         except:
             pass
-        scores.append((p, r))
+        scores.extend([p, r])
     return scores
 
 def read_training_data(csv_path, image_prefix = None, category = False, sample_weight = False):

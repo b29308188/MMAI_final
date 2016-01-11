@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-
 #labels for each kind of tag
 label_maps = {"T":0 , "F": 1, "N": 2}
 inv_label_maps = {v : k  for (k, v) in label_maps.items()}
@@ -71,7 +70,6 @@ class Photo:
     def colorgram(self, img):
         cgram = []
         for i in xrange(3): # RGB
-            #cgram += [np.mean(img[0:,0:,i]), np.var(img[0:,0:,i])]
             cgram += [np.mean(img[0:,0:,i]), np.std(img[0:,0:,i])]
         return cgram
 
@@ -83,21 +81,19 @@ class Photo:
         for i, f1 in enumerate(self.faces):
             for j, f2 in enumerate(self.faces):
                 dis = np.sqrt(((f1.x+f1.w/2) - (f2.x+f2.w/2))**2 + ((f1.y+f1.h/2) - (f2.y+f2.h/2))**2) #l2 dis
-                #dis = np.absolute((f1.x+f1.w/2) - (f2.x+f2.w/2)) + np.absolute((f1.y+f1.h/2) - (f2.y+f2.h/2)) #l1 dis
-                #dis = ((f1.x * f2.x) + (f1.y * f2.y))/np.sqrt((f1.x**2+f1.y**2) * (f2.x**2+f2.y**2)) # cos dis
-                # dis = np.sqrt((float((f1.x+f1.w/2) - (f2.x+f2.w/2))/self.image.shape[0])**2 + \
-                #     (float((f1.y+f1.h/2) - (f2.y+f2.h/2))/self.image.shape[1])**2) # weighted l2 dis
                 self.disMatrix[i, j] = dis
                 average_distance += dis
-        #gfs += [average_distance/(len(self.faces)*(len(self.faces)-1)/2)]
         self.global_feature = gfs
 
     def local_features(self, f, no):
-        lfs = [f.x, f.y, f.w, f.h ] 
+        lfs = [f.x, f.y, f.w, f.h]
+        lfs += [np.mean([ff.x for ff in self.faces]), np.var([ff.x for ff in self.faces])]
+        lfs += [np.mean([ff.y for ff in self.faces]), np.var([ff.y for ff in self.faces])]
+        lfs += [np.mean([ff.w for ff in self.faces]), np.var([ff.w for ff in self.faces])]
+        lfs += [np.mean([ff.h for ff in self.faces]), np.var([ff.h for ff in self.faces])]
         lfs += self.colorgram(self.image[f.y : f.y+f.h, f.x : f.x+f.w])
 
         lfs += [np.var(self.disMatrix[no, :]), np.mean(self.disMatrix[no, :])] # average distance to other faces
-        #lfs += [f.w * f.h] # size
         lfs += [f.x+f.w/2, f.y+f.h/2] # center
         
         NinR = 0.0
@@ -105,10 +101,8 @@ class Photo:
         for i in xrange(len(self.faces)):
             if self.disMatrix[no, i] < R :
                 NinR += 1
-            #print self.disMatrix[no, i]
 
         lfs += [NinR/len(self.faces)]
-        #lfs += self.histogram(self.image[f.y : f.y+f.h, f.x : f.x+f.w])
         return lfs
 
     
@@ -120,7 +114,6 @@ class Photo:
         for i, f in enumerate(self.faces):
             if self.image is not None:
                 f.feature = np.array(self.local_features(f, i) + self.global_feature )
-                #f.feature = np.array(self.local_features(f, i) )
             else:
                 f.feature = np.array([f.x, f.y, f.w, f.h])
 

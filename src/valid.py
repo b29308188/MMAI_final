@@ -17,8 +17,8 @@ if __name__ == "__main__":
     
     #kf = LabelKFold(categories, n_folds = 5) # ***shuffle internally***
     kf = KFold(len(X), n_folds = 5, shuffle = True, random_state = 123)
-    
     #cross validation
+    S = []
     for train_index, test_index in kf:
         trainX, testX = X[train_index], X[test_index]
         trainY, testY = Y[train_index], Y[test_index]
@@ -29,6 +29,10 @@ if __name__ == "__main__":
         predY = model.predict(testX)
         
         #evaluation
+        
         scores = weighted_precision_recall(testY, predY, sample_weight = sample_weights[test_index])
-        print "(Precision/Recall) T: (%.3f,%.3f) / F: (%.3f,%.3f) / N:(%.3f,%.3f)" %(scores[0][0], scores[0][1], scores[1][0], scores[1][1], scores[2][0], scores[2][1])
+        S.append(scores)
+        print "(Precision/Recall) T: (%.3f,%.3f) / F: (%.3f,%.3f) / N:(%.3f,%.3f)" %(scores[0], scores[1], scores[2], scores[3], scores[4], scores[5])
+    S = np.array(S)
+    print "TOTAL (Precision/Recall) T: (%.3f,%.3f) / F: (%.3f,%.3f) / N:(%.3f,%.3f)" %(np.mean(S[:,0]), np.mean(S[:,1]), np.mean(S[:,2]), np.mean(S[:,3]), np.mean(S[:,4]), np.mean(S[:,5]))
 

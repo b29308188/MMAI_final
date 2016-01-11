@@ -7,7 +7,7 @@ from camera import Camera
 import os
 import sys
 
-Cam = Camera(model_path="../Gfuck.model")
+Cam = Camera(model_path="../290.model")
 
 if not os.path.exists("../data/output/"):
     os.makedirs("../data/output/")
