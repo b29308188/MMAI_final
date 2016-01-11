@@ -46,7 +46,7 @@ class Photo:
         """
         Read image from the image_path and store it in memory
         """
-        self.image = cv2.imread(image_path)
+        self.image = cv2.resize(cv2.imread(image_path), (960, 720))
         assert self.image is not None
 
     def add_face(self, x, y, w, h, tag = None):
@@ -76,6 +76,10 @@ class Photo:
     def get_global_features(self):
         gfs = []
         gfs += [len(self.faces), self.image.shape[0]*self.image.shape[1]] # number of faces in this image
+        gfs += [np.mean([f.x for f in self.faces]), np.var([f.x for f in self.faces])]
+        gfs += [np.mean([f.y for f in self.faces]), np.var([f.y for f in self.faces])]
+        gfs += [np.mean([f.w for f in self.faces]), np.var([f.w for f in self.faces])]
+        gfs += [np.mean([f.h for f in self.faces]), np.var([f.h for f in self.faces])]
         average_distance = 0.
         self.disMatrix = np.zeros((len(self.faces), len(self.faces)))
         for i, f1 in enumerate(self.faces):
@@ -87,10 +91,6 @@ class Photo:
 
     def local_features(self, f, no):
         lfs = [f.x, f.y, f.w, f.h]
-        lfs += [np.mean([ff.x for ff in self.faces]), np.var([ff.x for ff in self.faces])]
-        lfs += [np.mean([ff.y for ff in self.faces]), np.var([ff.y for ff in self.faces])]
-        lfs += [np.mean([ff.w for ff in self.faces]), np.var([ff.w for ff in self.faces])]
-        lfs += [np.mean([ff.h for ff in self.faces]), np.var([ff.h for ff in self.faces])]
         lfs += self.colorgram(self.image[f.y : f.y+f.h, f.x : f.x+f.w])
 
         lfs += [np.var(self.disMatrix[no, :]), np.mean(self.disMatrix[no, :])] # average distance to other faces
