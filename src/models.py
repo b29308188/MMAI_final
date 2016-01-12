@@ -8,7 +8,7 @@ class Model:
     Machine learning models for fitting and predicting data
     """
     def __init__(self):
-        self.clf = SVC(C = 1,  kernel = "rbf", decision_function_shape = "ovr")
+        self.clf = SVC(C = 10,  kernel = "rbf", decision_function_shape = "ovr")
         self.scaler = StandardScaler()
 
     def fit(self, X, Y, sample_weight = None):

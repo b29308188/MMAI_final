@@ -110,12 +110,13 @@ class Photo:
         """
         For each face in the list of faces, extract its features.
         """
-        self.get_global_features()
+        if self.image is not None:
+            self.get_global_features()
         for i, f in enumerate(self.faces):
             if self.image is not None:
                 f.feature = np.array(self.local_features(f, i) + self.global_feature )
             else:
-                f.feature = np.array([f.x, f.y, f.w, f.h])
+                f.feature = np.array([float(f.w*f.h)])
 
     
 

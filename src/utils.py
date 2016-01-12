@@ -22,7 +22,7 @@ def detect_faces(detector, image):
         gray,
         scaleFactor=1.05,
         #scaleFactor=1.2,
-        minNeighbors=5,
+        minNeighbors=8,
         minSize=(10, 10),
         flags = cv2.CASCADE_SCALE_IMAGE
     )
